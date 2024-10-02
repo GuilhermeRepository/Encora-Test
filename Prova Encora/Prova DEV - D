@@ -1,0 +1,50 @@
+#include <iostream>
+#include <set>
+#include <vector>
+
+using namespace std;
+
+// Function to calculate and return the set of coin combinations
+set<vector<int>> makeChange(int amount) {
+    set<vector<int>> combinations;
+
+    // Recursive helper function
+    function<void(int, vector<int>&)> makeChangeRecursive = [&combinations](int remaining, vector<int>& currentCombination) {
+        if (remaining == 0) {
+            combinations.insert(currentCombination);
+            return;
+        }
+
+        vector<int> coinValues = {25, 10, 5, 1};
+        for (int i = 0; i < coinValues.size(); i++) {
+            if (remaining >= coinValues[i]) {
+                currentCombination[i]++;
+                makeChangeRecursive(remaining - coinValues[i], currentCombination);
+                currentCombination[i]--;
+            }
+        }
+    };
+
+    // Initial combination
+    vector<int> currentCombination(4, 0);
+
+    // Start the recursive process
+    makeChangeRecursive(amount, currentCombination);
+
+    return combinations;
+}
+
+int main() {
+    int amount = 12;
+    set<vector<int>> combinations = makeChange(amount);
+
+    // Print the combinations
+    for (const vector<int>& combination : combinations) {
+        for (int coin : combination) {
+            cout << coin << " ";
+        }
+        cout << endl;
+    }
+
+    return 0;
+}
